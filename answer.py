@@ -37,7 +37,7 @@ for i in input().split():
     gdata.en_base = int(i)
 
 gdata.neighs = []
-for i in range(6):
+for i in range(0, 5, 1):
     gdata.neighs.append(gdata.mdata[gdata.my_base][i + 2])
 
 gdata.egg = -1
@@ -46,11 +46,10 @@ gdata.turn = 0
 
 def grab_neigh():
     for neigh in gdata.neighs:
-        if neigh >= 0 and gdata.nlines < 3:
-            if gdata.mdata[neigh][0] == 1:
-                gdata.nlines += 1
-                gdata.action += "LINE " + str(gdata.my_base) + " " + str(neigh) + " 1; MESSAGE lol;"
-                gdata.near = True
+        if neigh >= 0 and gdata.nlines < 3 and gdata.mdata[neigh][0] == 1:
+            gdata.nlines += 1
+            gdata.action += "LINE " + str(gdata.my_base) + " " + str(neigh) + " 1000; MESSAGE neigh;"
+            gdata.near = True
 
 # game loop
 while True:
@@ -70,22 +69,21 @@ while True:
 
     # Search cells directly adjacent to base first
     grab_neigh()
-    
+
     # Then search for a big egg cell and store its location
     for idx, cell in enumerate(gdata.mdata):
         if cell[0] == 1 and cell[8] >= 20 and gdata.egg == -1 and not gdata.near:
             gdata.egg = idx
             
     # Then start gathering the eggs
-    if gdata.egg >= 0 and gdata.egg != -1 and not gdata.near and gdata.ngold > 3:
+    if gdata.egg == 1 and gdata.egg != -1 and not gdata.near and gdata.ngold > 3:
         gdata.nlines += 1
-        gdata.action += "LINE " + str(gdata.my_base) + " " + str(gdata.egg) + " 1; MESSAGE " + str(gdata.ngold) + ";"
+        gdata.action += "LINE " + str(gdata.my_base) + " " + str(gdata.egg) + " 300; MESSAGE egg;"
     
     # Then grab all the crystals
     for idx, cell in enumerate(gdata.mdata):
-        if cell[0] == 2 and gdata.nlines < 9 and not gdata.near:
+        if cell[0] == 2 and gdata.nlines < 5 and not gdata.near:
             gdata.nlines += 1
-            gdata.action += "LINE " + str(gdata.my_base) + " " + str(idx) + " " + str(int(cell[8] / 2) + 100) + ";"
+            gdata.action += "LINE " + str(gdata.my_base) + " " + str(idx) + " " + str(int(cell[8] / 2) + 100) + ";MESSAGE not near"
     
-    print(gdata.action) 
-
+    print(gdata.action)
